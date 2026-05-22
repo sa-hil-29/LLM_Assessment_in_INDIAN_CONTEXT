@@ -1,0 +1,39 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Databases & local environments
+*.sqlite3
+.env
+.venv/
+env/
+venv/
+ENV/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDEs/Editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# LaTeX compilation auxiliary files (for dissertation.tex)
+*.aux
+*.log
+*.toc
+*.out
+*.pdf
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+*.blg
+*.bbl

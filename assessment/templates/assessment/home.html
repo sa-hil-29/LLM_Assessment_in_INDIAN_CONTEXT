@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}LLM Assessment in Indian Context{% endblock %}
+
+{% block page_title %}Welcome to LLM Assessment{% endblock %}
+
+{% block page_description %}Comprehensive evaluation of Large Language Models in Indian Context{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'assessment/home.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="hero-content">
+        <h1>LLM Assessment in Indian Context</h1>
+        <p class="hero-description">
+            A comprehensive framework for evaluating Large Language Models (LLMs) specifically designed
+            to assess their performance, safety, and cultural awareness in the Indian context.
+        </p>
+        <div class="hero-actions">
+            <a href="{% url 'assessment:leaderboard' %}" class="btn-primary">View Leaderboard</a>
+            <a href="#about" class="btn-secondary">Learn More</a>
+        </div>
+    </div>
+</div>
+
+<div class="features-section">
+    <div class="features-container">
+        <h2>Why Indian Context Matters</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🌍</div>
+                <h3>Cultural Awareness</h3>
+                <p>Models need to understand Indian cultural nuances, festivals, traditions, and social contexts.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🗣️</div>
+                <h3>Linguistic Diversity</h3>
+                <p>Evaluation across multiple Indian languages including Hindi, Bengali, Tamil, Telugu, and more.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🛡️</div>
+                <h3>Safety & Ethics</h3>
+                <p>Ensuring models are safe, unbiased, and aligned with Indian ethical standards and values.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Comprehensive Metrics</h3>
+                <p>Multi-dimensional assessment covering performance, bias, safety, and cultural appropriateness.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include "assessment/includes/assessment_categories.html" %}
+
+<div class="models-section">
+    <div class="models-container">
+        <h2>Models Under Assessment</h2>
+        <p class="section-description">
+            We evaluate a diverse range of Large Language Models across different architectures,
+            sizes, and training approaches to provide comprehensive insights.
+        </p>
+        <div class="models-grid">
+            <div class="model-category">
+                <h3>Open-Source Models</h3>
+                <ul>
+                    <li>Llama 3 series</li>
+                    <li>Gemma models</li>
+                    <li>Mistral variants</li>
+                </ul>
+            </div>
+            <div class="model-category">
+                <h3>Quantized Models: In Future these models will also be added </h3>
+                <ul>
+                    <li>GPTQ compressed models</li>
+                    <li>AWQ optimized variants</li>
+                    <li>4-bit and 8-bit quantizations</li>
+                    <li>Efficient inference models</li>
+                </ul>
+            </div>
+            <div class="model-category">
+                <h3>Fine-tuned Models: In Future these models will also be added</h3>
+                <ul>
+                    <li>Instruction-tuned variants</li>
+                    <li>Domain-specific adaptations</li>
+                    <li>Indian language fine-tunes</li>
+                    <li>Safety-aligned models</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="cta-section">
+    <div class="cta-container">
+        <h2>Explore the Leaderboard</h2>
+        <p>Compare model performance across all assessment categories and find the best models for your Indian use case.
+        </p>
+        <a href="{% url 'assessment:leaderboard' %}" class="btn-primary">View Full Leaderboard</a>
+    </div>
+</div>
+{% endblock %}

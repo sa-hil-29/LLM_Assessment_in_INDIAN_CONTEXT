@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block page_title %}{{ title }}{% endblock %}
+
+{% block page_description %}{{ description }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'assessment/leaderboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="hero-grid">
+        <div class="card search-panel">
+            <h2>Search models</h2>
+            <input id="searchInput" type="search"
+                placeholder="Search for your model (separate multiple queries with `;`) and press ENTER...">
+            <div class="footer-note">Search by model, type, precision, or architecture and update the leaderboard
+                instantly.</div>
+
+            <div class="filter-section">
+                <h3>Select columns to show</h3>
+                <div class="chip-list" id="columnChips">
+                    <span class="chip checked" data-column="Average">Average</span>
+                    <span class="chip checked" data-column="Non-toxicity">Non-toxicity</span>
+                    <span class="chip checked" data-column="Non-Stereotype">Non-Stereotype</span>
+                    <span class="chip checked" data-column="Privacy">Privacy</span>
+                    <span class="chip checked" data-column="Ethics">Ethics</span>
+                    <span class="chip checked" data-column="Fairness">Fairness</span>
+                    <span class="chip" data-column="Type">Type</span>
+                    <span class="chip" data-column="Architecture">Architecture</span>
+                    <span class="chip" data-column="Precision">Precision</span>
+                    <span class="chip" data-column="#Params (B)">#Params (B)</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card filter-panel">
+            <h2>Model filters</h2>
+            <div class="filter-section">
+                <h3>Model types</h3>
+                <div class="chip-list" id="typeChips">
+                    <span class="chip checked" data-value="pretrained">pretrained</span>
+                    <span class="chip checked" data-value="fine-tuned">fine-tuned</span>
+                    <span class="chip checked" data-value="instruction-tuned">instruction-tuned</span>
+                    <span class="chip checked" data-value="RL-tuned">RL-tuned</span>
+                    <span class="chip locked" data-value="private">locked</span>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <h3>Precision</h3>
+                <div class="chip-list" id="precisionChips">
+                    <span class="chip checked" data-value="float16">float16</span>
+                    <span class="chip checked" data-value="bfloat16">bfloat16</span>
+                    <span class="chip checked" data-value="GPTQ-3bit">GPTQ-3bit</span>
+                    <span class="chip checked" data-value="GPTQ-4bit">GPTQ-4bit</span>
+                    <span class="chip checked" data-value="GPTQ-8bit">GPTQ-8bit</span>
+                    <span class="chip checked" data-value="AWQ-3bit">AWQ-3bit</span>
+                    <span class="chip checked" data-value="AWQ-4bit">AWQ-4bit</span>
+                    <span class="chip checked" data-value="AWQ-8bit">AWQ-8bit</span>
+                    <span class="chip locked" data-value="locked">locked</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card submit-cta-panel">
+        <div class="submit-cta-content">
+            <div>
+                <h2>Don't see your model?</h2>
+                <p>Submit your model details and we'll evaluate it against our Indian context benchmarks.</p>
+            </div>
+            <button class="btn-primary" onclick="toggleModal(event)">Submit Model Now</button>
+        </div>
+    </div>
+
+    <div class="card table-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h2 style="margin: 0;">Model leaderboard</h2>
+            <button class="btn-primary" id="reEvalBtn" onclick="reevaluateAll(event)">Re-evaluate All</button>
+        </div>
+        <div class="table-shell">
+            <table>
+                <thead>
+                    <tr>
+                        <th data-column="Model">Model</th>
+                        <th data-column="Average">Average</th>
+                        <th data-column="Non-toxicity">Non-toxicity</th>
+                        <th data-column="Non-Stereotype">Non-Stereotype</th>
+                        <th data-column="Privacy">Privacy</th>
+                        <th data-column="Ethics">Ethics</th>
+                        <th data-column="Fairness">Fairness</th>
+                        <th data-column="Type">Type</th>
+                        <th data-column="Architecture">Architecture</th>
+                        <th data-column="Precision">Precision</th>
+                        <th data-column="#Params (B)">#Params (B)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for model in models %}
+                    <tr data-model-type="{{ model.get_model_type_display|lower }}"
+                        data-precision="{{ model.precision|lower }}">
+                        <td data-column="Model"><strong>{{ model.name }}</strong></td>
+                        <td data-column="Average">{{ model.average_score }}</td>
+                        <td data-column="Non-toxicity">{{ model.non_toxicity }}</td>
+                        <td data-column="Non-Stereotype">{{ model.non_stereotype }}</td>
+                        <td data-column="Privacy">{{ model.privacy }}</td>
+                        <td data-column="Ethics">{{ model.ethics }}</td>
+                        <td data-column="Fairness">{{ model.fairness }}</td>
+                        <td data-column="Type">{{ model.get_model_type_display }}</td>
+                        <td data-column="Architecture">{{ model.architecture }}</td>
+                        <td data-column="Precision">{{ model.precision }}</td>
+                        <td data-column="#Params (B)">{{ model.parameters }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr data-placeholder>
+                        <td colspan="14" class="table-placeholder">
+                            No model to show
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'assessment/leaderboard.js' %}"></script>
+<script>
+function reevaluateAll(e) {
+    e.preventDefault();
+    const btn = document.getElementById('reEvalBtn');
+    btn.disabled = true;
+    btn.innerText = "Evaluating...";
+    
+    fetch("{% url 'assessment:reevaluate_all' %}", {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": "{{ csrf_token }}"
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert(data.message);
+            btn.innerText = "Evaluation Started";
+        } else {
+            alert("Error: " + data.message);
+            btn.disabled = false;
+            btn.innerText = "Re-evaluate All";
+        }
+    })
+    .catch(err => {
+        alert("An error occurred. Please check server logs.");
+        btn.disabled = false;
+        btn.innerText = "Re-evaluate All";
+    });
+}
+</script>
+{% endblock %}

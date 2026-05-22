@@ -1,0 +1,256 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}LLM Assessment · Indian Context{% endblock %}</title>
+        <!-- Base Stylesheet (inherited by all pages) -->
+        <link rel="stylesheet" href="{% static 'base.css' %}">
+        <!-- App-specific Stylesheet -->
+        <link rel="stylesheet" href="{% static 'assessment/styles.css' %}">
+        <style>
+            .main-navigation,
+            .about-section,
+            .cta-section,
+            .feature-card,
+            .category-card,
+            .model-category {
+                --text: #111827;
+                --text-secondary: #4b5563;
+                --border: #e1e5e9;
+            }
+
+            /* About Section Styles */
+            .about-section {
+                background-color: var(--surface-secondary, #f8fafc);
+                padding: 3rem 0;
+                margin-top: 2rem;
+            }
+
+            .about-container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 20px;
+            }
+
+            .about-section h2 {
+                color: var(--text, #1c1e21);
+                font-size: 2rem;
+                margin-bottom: 2rem;
+                text-align: center;
+            }
+
+            .about-content p {
+                color: var(--text-secondary, #4b5563);
+                line-height: 1.6;
+                margin-bottom: 2rem;
+                max-width: 800px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .about-content h3 {
+                color: var(--text, #1c1e21);
+                font-size: 1.5rem;
+                margin: 2rem 0 1rem 0;
+                text-align: center;
+            }
+
+            .categories-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 1.5rem;
+                margin: 2rem 0;
+            }
+
+            .category-card {
+                background: var(--surface, #ffffff);
+                padding: 1.5rem;
+                border-radius: 8px;
+                border: 1px solid var(--border, #e1e5e9);
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            }
+
+            .category-card h4 {
+                color: var(--text, #1c1e21);
+                margin: 0 0 0.5rem 0;
+                font-size: 1.1rem;
+            }
+
+            .category-card p {
+                color: var(--text-secondary, #4b5563);
+                margin: 0;
+                font-size: 0.9rem;
+                line-height: 1.5;
+            }
+
+            @media (max-width: 768px) {
+                .nav-links {
+                    gap: 1rem;
+                }
+
+                .nav-links li a {
+                    padding: 0.75rem 0;
+                    font-size: 0.9rem;
+                }
+
+                .categories-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .about-section {
+                    padding: 2rem 0;
+                }
+            }
+        </style>
+        {% block extra_css %}{% endblock %}
+    </head>
+
+    <body>
+        <div class="page-shell">
+            <!-- Header Section -->
+            <div class="page-header">
+                <div class="branding">
+                    {% block header %}
+                    <div class="label-pill">LLM Assessment · Indian Context</div>
+                    <h1>{% block page_title %}{% endblock %}</h1>
+                    <p>{% block page_description %}{% endblock %}</p>
+                    {% endblock %}
+                </div>
+            </div>
+
+            <!-- Navigation Bar -->
+            <nav class="main-navigation">
+                <div class="nav-container">
+                    <ul class="nav-links">
+                        <li><a href="{% url 'assessment:home' %}"
+                                class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">Home</a>
+                        </li>
+                        <li><a href="{% url 'assessment:leaderboard' %}"
+                                class="{% if request.resolver_match.url_name == 'leaderboard' %}active{% endif %}">Leaderboard</a>
+                        </li>
+                        <li><a href="{% url 'assessment:about' %}"
+                                class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}">About</a>
+                        </li>
+                        <li class="nav-submit-li"><a href="#" class="nav-submit-btn" onclick="toggleModal(event)">Submit
+                                Model</a></li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="page-content">
+                {% block content %}{% endblock %}
+
+                <!-- About Section removed, moved to a separate /about page -->
+            </main>
+
+            <!-- Footer Section -->
+            {% block footer %}
+            <footer class="page-footer">
+                <p>&copy; 2026 LLM Assessment. All rights reserved.</p>
+            </footer>
+            {% endblock %}
+        </div>
+
+        <!-- Submit Model Modal -->
+        <div class="modal-overlay" id="submitModal">
+            <div class="modal-content">
+                <span class="modal-close" onclick="toggleModal()">&times;</span>
+                <div class="modal-header">
+                    <h2>Submit Your Model</h2>
+                    <p>Provide your model details for evaluation in the Indian context.</p>
+                </div>
+
+                <form id="submitModelForm" action="{% url 'assessment:submit_model' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="modelName">Model Name</label>
+                        <input type="text" id="modelName" name="model_name" placeholder="e.g. Llama-3.1-8B-Indian"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="apiKey">API Key / Endpoint</label>
+                        <input type="password" id="apiKey" name="api_key" placeholder="Enter your API key" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="provider">Provider</label>
+                        <select id="provider" name="provider">
+                            <option value="groq">Groq</option>
+                            <option value="openrouter">OpenRouter</option>
+                            <option value="huggingface">Hugging Face</option>
+                            <option value="gemini">Gemini</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-submit" id="submitBtn">Request Assessment</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Global Scripts -->
+        <!-- Global Scripts -->
+        <script>
+            function toggleModal(e) {
+                if (e) e.preventDefault();
+                const modal = document.getElementById('submitModal');
+                modal.classList.toggle('active');
+            }
+
+            // Close modal when clicking outside
+            window.onclick = function (event) {
+                const modal = document.getElementById('submitModal');
+                if (event.target == modal) {
+                    modal.classList.remove('active');
+                }
+            }
+
+            // Handle form submission with AJAX
+            const submitForm = document.getElementById('submitModelForm');
+
+            if (submitForm) {
+                submitForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    const submitBtn = document.getElementById('submitBtn');
+                    const originalText = submitBtn.textContent;
+
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = "Submitting...";
+
+                    const formData = new FormData(this);
+
+                    fetch(this.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.status === 'success') {
+                                alert(data.message);
+                                this.reset();
+                                toggleModal();
+                            } else {
+                                alert(data.message || 'Something went wrong.');
+                            }
+                        })
+                        .catch(error => {
+                            alert('Error submitting model. Please try again.');
+                            console.error(error);
+                        })
+                        .finally(() => {
+                            submitBtn.disabled = false;
+                            submitBtn.textContent = originalText;
+                        });
+                });
+            }
+        </script>
+        <!-- Scripts -->
+        {% block extra_js %}{% endblock %}
+    </body>
+
+</html>

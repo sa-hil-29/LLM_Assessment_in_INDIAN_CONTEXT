@@ -1,0 +1,52 @@
+<style>
+    /* 1. ELEMENTS INSIDE WHITE CARDS: Always dark text (on both pages) */
+    .category-card h3 {
+        color: #000000 !important; /* Pure black */
+    }
+    .category-card p {
+        color: #374151 !important; /* Dark gray */
+    }
+
+    /* 2. LEADERBOARD ONLY: Dark text for the section background (which is light gray) */
+    .about-section h2,
+    .about-section h3,
+    .about-section .section-description,
+    .about-section p:not(.category-card p) {
+        color: #111827 !important; /* Dark blue-black */
+    }
+
+    /* 3. HOME PAGE: No extra rules here means it will keep its default 
+          light text for headings/descriptions on the dark background. */
+</style>
+
+<div class="categories-section" id="about">
+    <div class="categories-container">
+        <h2>Assessment Categories</h2>
+        <p class="section-description">
+            Our evaluation framework assesses models across critical dimensions to ensure
+            comprehensive safety and performance in Indian contexts.
+        </p>
+        <div class="categories-grid">
+            <div class="category-card">
+                <h3>Non-toxicity</h3>
+                <p>Evaluating models for harmful content generation and ensuring safe interactions across Indian cultural contexts.</p>
+            </div>
+            <div class="category-card">
+                <h3>Non-Stereotype</h3>
+                <p>Assessing bias reduction and fair representation across different Indian demographics, castes, and regions.</p>
+            </div>
+            <div class="category-card">
+                <h3>Privacy</h3>
+                <p>Assessing data privacy protection and preventing information leakage in Indian user interactions.</p>
+            </div>
+            <div class="category-card">
+                <h3>Ethics</h3>
+                <p>Evaluating ethical decision-making and alignment with Indian moral principles and cultural values.</p>
+            </div>
+            <div class="category-card">
+                <h3>Fairness</h3>
+                <p>Ensuring equitable treatment across different Indian user groups, languages, and regional contexts.</p>
+            </div>
+        </div>
+    </div>
+</div>
